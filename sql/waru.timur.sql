@@ -1,0 +1,10 @@
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ('SOBIH');
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ('KENDAL');
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ('DU UMAN');
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ('LEMBANAH');
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ('TANA MIRA');
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ('SONGAI RAJA');
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ('GUNUNG TIMUR');
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ('GUNUNG TENGAH');
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ("CO' GUNUNG ATAS");
+INSERT INTO tbl_ref_dusun (dusun_nama) VALUES ("CO' GUNUNG BAWAH");
