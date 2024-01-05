@@ -1,0 +1,4 @@
+chmod +x create_directory.sh
+cd /var/www/html/test
+mkdir test2
+ls -l

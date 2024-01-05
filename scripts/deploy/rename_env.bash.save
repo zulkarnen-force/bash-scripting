@@ -1,0 +1,43 @@
+cd  /var/www/html/test
+git pull
+
+cd /var/www/html/simades-sotabar.pamekasankab.go.id
+pwd
+mv .env.development .env.developmen
+git pull
+
+cd /var/www/html/simades-sanadaja.pamekasankab.go.id
+ Github.com server
+Host github.com
+ Hostname ssh.github.com
+ Port 443
+
+git pull
+
+cd /var/www/html/simades-tlontoraja.pamekasankab.go.id
+pwd
+git pull
+
+cd /var/www/html/bindang.pamekasankab.go.id
+pwd
+git pull
+
+cd /var/www/html/dempotimur.pamekasankab.go.id
+pwd
+git pull
+
+cd /var/www/html/dempobarat.pamekasankab.go.id
+pwd
+git pull
+
+cd /var/www/html/sanatengah.pamekasankab.go.id
+pwd
+git pull
+
+cd /var/www/html/batukerbuy.pamekasankab.go.id
+pwd
+git pull
+
+cd /var/www/html/tagangserdaja.pamekasankab.go.id
+pwd
+git pull

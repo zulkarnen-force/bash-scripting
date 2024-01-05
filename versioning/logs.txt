@@ -1,0 +1,16 @@
+{"message":"Prayers time created successfully"}
+{"message":"Prayers time created successfully"}
+{"message":"Prayers time created successfully"}
+make request to get jadwal shalats with date from 2024-01-06 to 2024-01-11
+{"message":"Prayers time created successfully"}
+2023-12-27: make request to get jadwal shalats with date from 2024-01-11 to 2024-01-16
+{"message":"Prayers time created successfully"}
+: make request to get jadwal shalats with date from 2024-01-16 to 2024-01-21
+{"message":"Prayers time created successfully"}
+: Make request  generate jadwal shalats with date from 2024-01-21 to 2024-01-26
+{"message":"Prayers time created successfully"}
+2023-12-27-1703688795: Make request  generate jadwal shalats with date from 2024-01-26 to 2024-01-31
+{"message":"Prayers time created successfully"}
+2023-12-27-21:54:50: Make request  generate jadwal shalats with date from 2024-01-31 to 2024-02-05
+2023-12-27-21:56:01: {"message":"Prayers time created successfully"}
+2023-12-27-21:56:01: Make request generate jadwal shalats with date from 2024-02-05 to 2024-02-10
