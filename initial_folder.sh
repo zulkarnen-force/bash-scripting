@@ -1,0 +1,1 @@
+/home/zulkarnen/Developments/SunHouse/Simades-Server/sotabar/initial_folder.sh
