@@ -4,6 +4,7 @@ mysql_user="root"
 mysql_password="Dataku_2023"
 mysql_host="localhost"
 file="/home/$USER/sql/$1"
+db_file="/home/$USER/sql/databases.txt"
 log_file="/home/$USER/sql_execution.log"
 
 # Check if SQL file is provided
@@ -18,18 +19,14 @@ if [ ! -f "$file" ]; then
     exit 1
 fi
 
-# Databases to execute the SQL file on
-databases=(
-    db_penduduk_batukerbuy
-    db_penduduk_bindang
-    db_penduduk_dempobarat
-    db_penduduk_dempotimur
-    db_penduduk_sanadaja
-    db_penduduk_sanatengah
-    db_penduduk_sotabar
-    db_penduduk_tagangserdaja
-    db_penduduk_tlontoraja
-)
+# Ensure the database file exists
+if [ ! -f "$db_file" ]; then
+    echo "Database list file not found: $db_file"
+    exit 1
+fi
+
+# Read databases from the file into an array
+mapfile -t databases < "$db_file"
 
 # Start logging
 echo "=== SQL Execution Log ===" >> "$log_file"

@@ -1,10 +1,10 @@
 #!/bin/bash
 SOURCE_DIR="$HOME"           # Source directory
-REMOTE_NAME="pcloudwebmail"                    # Replace with your Rclone remote name for Mega
+REMOTE_NAME="pcloud706"                    # Replace with your Rclone remote name for Mega
 REMOTE_DIR="Linux/home"           # Destination folder on Mega
 LOG_FILE="$HOME/backup.log"             # Log file location
-EXCLUDE_FILE="$HOME/Documents/exclude.txt"        # Path to your exclude file
-INCLUDE_FILE="$HOME/Developments/DevOps/bash-scripting/rclone/include.txt"        # Path to your exclude file
+EXCLUDE_FILE="$HOME/Developments/DevOps/bash-scripting/rclone/exclude_pcloud706.txt"        # Path to your exclude file
+INCLUDE_FILE="$HOME/Developments/DevOps/bash-scripting/rclone/pcloud706.txt"        # Path to your exclude file
 
 # Timestamp for log entries
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
@@ -19,12 +19,12 @@ case "$1" in
     copy)
         echo "[$TIMESTAMP] Starting initial copy of $SOURCE_DIR to Mega..." >> $LOG_FILE
         rclone copy "$SOURCE_DIR" "$REMOTE_NAME:$REMOTE_DIR" --progress --log-file="$LOG_FILE" --log-level INFO \
-        --exclude-from $EXCLUDE_FILE
+        --include-from "$INCLUDE_FILE" --exclude-from "$EXCLUDE_FILE"
         ;;
     sync)
         echo "[$TIMESTAMP] Starting sync of $SOURCE_DIR to Mega..." >> $LOG_FILE
         rclone sync "$SOURCE_DIR" "$REMOTE_NAME:$REMOTE_DIR" --progress --log-file="$LOG_FILE" --log-level INFO \
-          --exclude-from $EXCLUDE_FILE
+         --include-from "$INCLUDE_FILE"
         ;;
     remote-sync)
         echo "[$TIMESTAMP] Starting sync from Mega to $SOURCE_DIR..." >> $LOG_FILE
