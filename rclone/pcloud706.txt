@@ -1,2 +1,2 @@
 .ssh/**
-Documents/**
+Documents/Personal/dev-notes

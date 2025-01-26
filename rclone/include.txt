@@ -1,1 +1,2 @@
-.ssh/**
+/home/zulkarnen/.ssh/**
+/home/zulkarnen/Documents/Personal/dev-notes
