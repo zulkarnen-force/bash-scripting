@@ -6,7 +6,7 @@ REMOTE_DIR="Backup"          # Default base destination folder
 LOG_FILE="$HOME/backup.log"  # Default log file location
 EXCLUDE_FILE="$HOME/Developments/DevOps/bash-scripting/rclone/exclude.txt" # Default exclude file
 INCLUDE_FILE="$HOME/Developments/DevOps/bash-scripting/rclone/include.txt" # Default include file
-RETENTION_COUNT=7            # Number of backup folders to retain
+RETENTION_COUNT=7            # Default number of backup folders to retain
 
 # Function to display usage instructions
 usage() {
@@ -17,6 +17,7 @@ usage() {
     echo "  -l, --log-file <path>         Log file location"
     echo "  -e, --exclude-file <path>     Exclude file path"
     echo "  -i, --include-file <path>     Include file path"
+    echo "  -t, --retention-count <num>   Number of backup folders to retain"
     echo "Operation:"
     echo "  copy            Copy local files to remote"
     echo "  sync            Sync local files to remote"
@@ -46,6 +47,10 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         -i|--include-file)
             INCLUDE_FILE="$2"
+            shift 2
+            ;;
+        -t|--retention-count)
+            RETENTION_COUNT="$2"
             shift 2
             ;;
         -h|--help)
