@@ -1,2 +1,3 @@
 /home/zulkarnen/.ssh/**
 /home/zulkarnen/Documents/Personal/dev-notes
+/home/zulkarnen/Developments/SunHouse/simades/sotabar/dbdesa

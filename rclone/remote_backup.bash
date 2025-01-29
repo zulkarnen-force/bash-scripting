@@ -4,7 +4,6 @@
 REMOTE_NAME="default"        # Default Rclone remote name
 REMOTE_DIR="Backup"          # Default base destination folder
 LOG_FILE="$HOME/backup.log"  # Default log file location
-EXCLUDE_FILE="$HOME/Developments/DevOps/bash-scripting/rclone/exclude.txt" # Default exclude file
 INCLUDE_FILE="$HOME/Developments/DevOps/bash-scripting/rclone/include.txt" # Default include file
 RETENTION_COUNT=7            # Default number of backup folders to retain
 
@@ -15,7 +14,6 @@ usage() {
     echo "  -r, --remote-name <name>      Rclone remote name"
     echo "  -d, --remote-dir <path>       Remote directory base path"
     echo "  -l, --log-file <path>         Log file location"
-    echo "  -e, --exclude-file <path>     Exclude file path"
     echo "  -i, --include-file <path>     Include file path"
     echo "  -t, --retention-count <num>   Number of backup folders to retain"
     echo "Operation:"
@@ -39,10 +37,6 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         -l|--log-file)
             LOG_FILE="$2"
-            shift 2
-            ;;
-        -e|--exclude-file)
-            EXCLUDE_FILE="$2"
             shift 2
             ;;
         -i|--include-file)
@@ -80,9 +74,10 @@ echo "[$TIMESTAMP] Starting backup process..." >> "$LOG_FILE"
 
 case "$OPERATION" in
     copy)
-        echo "[$TIMESTAMP] Starting initial copy of / to $REMOTE_NAME:$REMOTE_DIR_WITH_TIMESTAMP..." >> "$LOG_FILE"
-        rclone copy / "$REMOTE_NAME:$REMOTE_DIR_WITH_TIMESTAMP" --progress --log-file="$LOG_FILE" --log-level INFO \
-        --include-from "$INCLUDE_FILE" --exclude-from "$EXCLUDE_FILE"
+        echo "[$TIMESTAMP] Starting initial copy of / to $REMOTE_NAME:$REMOTE_DIR/$(basename +"$folder")/$DATETIME..." >> "$LOG_FILE"
+        while read -r folder; do
+            rclone copy "$folder" "$REMOTE_NAME:$REMOTE_DIR/$(basename +"$folder")/$DATETIME" --progress --progress --log-file="$LOG_FILE" --log-level INFO 
+        done < "$INCLUDE_FILE"
         ;;
     sync)
         echo "[$TIMESTAMP] Starting sync of / to $REMOTE_NAME:$REMOTE_DIR_WITH_TIMESTAMP..." >> "$LOG_FILE"
@@ -112,17 +107,31 @@ else
     exit 1
 fi
 
-# Retention policy: Keep only the latest $RETENTION_COUNT folders
-echo "[$TIMESTAMP] Enforcing retention policy: keeping only the latest $RETENTION_COUNT backups..." >> "$LOG_FILE"
-BACKUP_FOLDERS=$(rclone lsf "$REMOTE_NAME:$REMOTE_DIR" --dirs-only --log-file="$LOG_FILE" --log-level INFO | sort -r)
-COUNT=0
+echo "[$TIMESTAMP] Enforcing retention policy: keeping only the latest $RETENTION_COUNT backups for each folder..." >> "$LOG_FILE"
 
-while read -r FOLDER; do
-    COUNT=$((COUNT + 1))
-    if [ "$COUNT" -gt "$RETENTION_COUNT" ]; then
-        echo "[$TIMESTAMP] Deleting old backup folder: $FOLDER" >> "$LOG_FILE"
-        rclone purge "$REMOTE_NAME:$REMOTE_DIR/$FOLDER" --log-file="$LOG_FILE" --log-level INFO
-    fi
-done <<< "$BACKUP_FOLDERS"
+while read -r folder; do
+    # Skip empty lines or commented lines
+    [[ -z "$folder" || "$folder" =~ ^# ]] && continue
+
+    # Get the remote backup path for this folder
+    BASE_FOLDER="$REMOTE_NAME:$REMOTE_DIR/$(basename "$folder")"
+
+    echo "[$TIMESTAMP] Checking backups in $BASE_FOLDER..." >> "$LOG_FILE"
+
+    # List all backup subfolders (timestamps), sort in reverse order (newest first)
+    BACKUP_FOLDERS=$(rclone lsf "$BASE_FOLDER" --dirs-only --log-file="$LOG_FILE" --log-level INFO | sort -r)
+
+    COUNT=0
+    while read -r BACKUP; do
+        COUNT=$((COUNT + 1))
+        if [ "$COUNT" -gt "$RETENTION_COUNT" ]; then
+            OLD_BACKUP="$BASE_FOLDER/$BACKUP"
+            echo "[$TIMESTAMP] Deleting old backup: $OLD_BACKUP" >> "$LOG_FILE"
+            rclone purge "$OLD_BACKUP" --log-file="$LOG_FILE" --log-level INFO
+        fi
+    done <<< "$BACKUP_FOLDERS"
+
+done < "$INCLUDE_FILE"
 
 echo "[$TIMESTAMP] Retention policy enforcement completed." >> "$LOG_FILE"
+
