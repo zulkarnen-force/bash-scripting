@@ -72,15 +72,20 @@ REMOTE_DIR_WITH_TIMESTAMP="$REMOTE_DIR/$DATETIME"
 
 echo "[$TIMESTAMP] Starting backup process..." >> "$LOG_FILE"
 
+
 case "$OPERATION" in
     copy)
-        echo "[$TIMESTAMP] Starting initial copy of / to $REMOTE_NAME:$REMOTE_DIR/$(basename +"$folder")/$DATETIME..." >> "$LOG_FILE"
         while read -r folder; do
-            rclone copy "$folder" "$REMOTE_NAME:$REMOTE_DIR/$(basename +"$folder")/$DATETIME" --progress --progress --log-file="$LOG_FILE" --log-level INFO 
+            REMOTE_PATH="$REMOTE_DIR/$(basename "$folder")/$DATETIME"
+            rclone copy "$folder" "$REMOTE_NAME:$REMOTE_PATH" --progress --progress --log-file="$LOG_FILE" --log-level INFO 
         done < "$INCLUDE_FILE"
         ;;
     sync)
-        echo "[$TIMESTAMP] Starting sync of / to $REMOTE_NAME:$REMOTE_DIR_WITH_TIMESTAMP..." >> "$LOG_FILE"
+        while read -r folder; do
+            REMOTE_PATH="$REMOTE_DIR/Sync/$(basename "$folder")"
+            echo "[$TIMESTAMP] Syncing $folder to $REMOTE_NAME:$REMOTE_PATH..." >> "$LOG_FILE"
+            rclone sync "$folder" "$REMOTE_NAME:$REMOTE_PATH" --progress --progress --log-file="$LOG_FILE" --log-level INFO 
+        done < "$INCLUDE_FILE"
         rclone sync / "$REMOTE_NAME:$REMOTE_DIR_WITH_TIMESTAMP" --progress --log-file="$LOG_FILE" --log-level INFO \
         --include-from "$INCLUDE_FILE"
         ;;
