@@ -6,3 +6,8 @@
 ```bash
  curl -sL https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/refs/heads/main/rclone/remote_backup.bash | bash -s -- -r mega -d Ubuntu-24.10 -i ./backup_documents_mega.txt sync
 ```
+
+
+```
+./backup_single_folder.bash --folder /mnt/zulkarnen/Developments/Personal/Kubernetes/k8s-labmu/dom -d ZKN -r mega copy
+```
