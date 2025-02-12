@@ -8,6 +8,6 @@
 ```
 
 
-```
+```bash
 ./backup_single_folder.bash --folder /mnt/zulkarnen/Developments/Personal/Kubernetes/k8s-labmu/dom -d ZKN -r mega copy
 ```
