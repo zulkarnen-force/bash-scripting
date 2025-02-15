@@ -7,16 +7,18 @@ USERNAME=""
 PASSWORD=""
 REMOTE_NAME=""
 BACKUP_BASE_DIR=~/host-backup  # Default backup directory
+RETAIN_COUNT=3  # Default number of backups to retain
 
 # Help function
 usage() {
-    echo "Usage: $0 --db_type <db_type> --db_name <db_name> --username <username> --password <password> [--backup-dir <backup_dir>] [--remote-name <remote_name>]"
+    echo "Usage: $0 --db_type <db_type> --db_name <db_name> --username <username> --password <password> [--backup-dir <backup_dir>] [--remote-name <remote_name>] [--retain <retain_count>]"
     echo "  -t, --db_type       Database type (psql, mysql, etc.)"
     echo "  -n, --db_name       Database name"
     echo "  -u, --username      Username for the database"
     echo "  -p, --password      Password for the database"
     echo "  -b, --backup-dir    Directory where backups should be stored (default: ~/host-backup)"
     echo "  -r, --remote-name   rclone remote name for syncing backups"
+    echo "  -k, --retain        Number of latest backups to retain (default: 3)"
     exit 1
 }
 
@@ -29,6 +31,7 @@ while [[ "$#" -gt 0 ]]; do
         -p|--password) PASSWORD="$2"; shift ;;
         -b|--backup-dir) BACKUP_BASE_DIR="$2"; shift ;;
         -r|--remote-name) REMOTE_NAME="$2"; shift ;;
+        -k|--retain) RETAIN_COUNT="$2"; shift ;;
         -h|--help) usage ;;
         *) echo "Unknown parameter: $1"; usage ;;
     esac
@@ -38,6 +41,12 @@ done
 # Validate required arguments
 if [[ -z "$DB_TYPE" || -z "$DB_NAME" || -z "$USERNAME" || -z "$PASSWORD" ]]; then
     echo "Error: Missing required arguments"
+    usage
+fi
+
+# Validate retain count is a positive integer
+if ! [[ "$RETAIN_COUNT" =~ ^[1-9][0-9]*$ ]]; then
+    echo "Error: Retain count must be a positive integer"
     usage
 fi
 
@@ -73,15 +82,15 @@ else
     exit 1
 fi
 
-# Retain only the latest 3 backups
+# Retain only the latest backups based on the retain count
 BACKUP_FILES=($(ls -1t "$BACKUP_DIR"/*.sql))  # List files sorted by modification time (newest first)
 TOTAL_FILES=${#BACKUP_FILES[@]}
 
-if [ "$TOTAL_FILES" -gt 3 ]; then
-    for ((i=3; i<TOTAL_FILES; i++)); do
+if [ "$TOTAL_FILES" -gt "$RETAIN_COUNT" ]; then
+    for ((i=RETAIN_COUNT; i<TOTAL_FILES; i++)); do
         rm -f "${BACKUP_FILES[$i]}"  # Delete old files
     done
-    echo "Old backups deleted, retaining only the latest 3 backups."
+    echo "Old backups deleted, retaining only the latest $RETAIN_COUNT backups."
 else
     echo "No old backups to delete, total backups: $TOTAL_FILES."
 fi
