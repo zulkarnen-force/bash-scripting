@@ -36,3 +36,20 @@ python3 container_backup.py \
   --remote pcloud706:my-backups  \
   --retention 3
 ```
+
+
+```bash
+python3 container_backup.py \
+  --container db_authserver_dev  \
+  --db-type mongodb \
+  --db-name authserver \
+  --db-user root \
+  --db-password supersecret \
+  --remote pcloud706:test-authserver  \
+  --retention 3
+```
+
+
+```bash
+python3 folder.py --folder=/home/zrx/Developments/Bash/bash-scripting  --remote pcloud706:test-bash --retention  3 --exclude .git
+```
