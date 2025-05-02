@@ -53,3 +53,12 @@ python3 container_backup.py \
 ```bash
 python3 folder.py --folder=/home/zrx/Developments/Bash/bash-scripting  --remote pcloud706:test-bash --retention  3 --exclude .git
 ```
+
+```bash
+0 2 * * * curl -sL https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/main/backup/folder.py | /usr/bin/python3 - 
+  --folder /home/zrx/Documents/Secret Directory 
+  --remote pcloud706:test-bash
+  --retention 5
+  --exclude .git
+  --exclude .env >> /home/zrx/backup.log 2>&1
+```

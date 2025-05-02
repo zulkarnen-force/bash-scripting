@@ -5,6 +5,7 @@ import os
 import tarfile
 import tempfile
 import fnmatch
+import shlex  # Added for safe quoting
 
 def run_command(command):
     """Run shell command and return output or raise error."""
@@ -37,17 +38,17 @@ def create_backup(folder_path, backup_file, exclude_patterns):
     print(f"[+] Created backup archive: {backup_file}")
 
 def upload_to_remote(backup_file, remote_path):
-    cmd = f"rclone copy {backup_file} {remote_path}"
+    cmd = f"rclone copy {shlex.quote(backup_file)} {shlex.quote(remote_path)}"
     print(f"[+] Uploading to remote: {cmd}")
     run_command(cmd)
 
 def apply_retention(remote_path, retention):
-    cmd = f"rclone lsf {remote_path}"
+    cmd = f"rclone lsf {shlex.quote(remote_path)}"
     output = run_command(cmd)
     files = sorted([line.strip() for line in output.splitlines() if line.strip()])
     if len(files) > retention:
         for file in files[:-retention]:
-            delete_cmd = f"rclone delete {remote_path}/{file}"
+            delete_cmd = f"rclone delete {shlex.quote(remote_path + '/' + file)}"
             print(f"[+] Deleting old backup: {file}")
             run_command(delete_cmd)
 
