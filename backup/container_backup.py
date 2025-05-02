@@ -83,12 +83,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# python backup_db.py \
-#   --container db.sotabar \
-#   --db-type mysql \
-#   --db-name db_penduduk_sotabar \
-#   --db-user root \
-#   --db-password password \
-#   --remote pcloud706:my-backups  \
-#   --retention 7
