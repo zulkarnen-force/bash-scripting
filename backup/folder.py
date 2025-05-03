@@ -42,20 +42,15 @@ def upload_to_remote(backup_file, remote_path):
     print(f"[+] Uploading to remote: {cmd}")
     run_command(cmd)
 
-def apply_retention(remote_path, retention, current_filename):
+def apply_retention(remote_path, retention):
     cmd = f"rclone lsf {shlex.quote(remote_path)}"
     output = run_command(cmd)
     files = sorted([line.strip() for line in output.splitlines() if line.strip()])
-
-    # Remove the current file from the list before applying retention logic
-    files = [f for f in files if f != current_filename]
-
-    if len(files) >= retention:
-        for file in files[:len(files) - retention + 1]:  # +1 to account for keeping the current file
+    if len(files) > retention:
+        for file in files[:-retention]:
             delete_cmd = f"rclone delete {shlex.quote(remote_path + '/' + file)}"
             print(f"[+] Deleting old backup: {file}")
             run_command(delete_cmd)
-
 
 def main():
     parser = argparse.ArgumentParser(description="Folder backup with rclone and retention")
