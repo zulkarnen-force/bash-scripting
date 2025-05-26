@@ -58,6 +58,16 @@ def apply_retention(remote_path, retention):
             print(f"[+] Deleting old backup: {file}")
             run_command(delete_cmd)
 
+def is_container_running(container_name):
+    """Return True if the Docker container is running."""
+    try:
+        output = run_command(f"docker inspect -f '{{{{.State.Running}}}}' {container_name}")
+        return output.lower() == 'true'
+    except Exception as e:
+        print(f"[!] Failed to inspect container '{container_name}': {e}")
+        return False
+
+   
 def main():
     parser = argparse.ArgumentParser(description="Containerized DB backup with rclone retention")
     parser.add_argument("--container", required=True, help="Docker container name")
@@ -73,6 +83,10 @@ def main():
     filename = f"{args.db_name}_{timestamp}.sql.gz"
     backup_file = os.path.join(tempfile.gettempdir(), filename)
 
+    if not is_container_running(args.container):
+        print(f"[!] Docker container '{args.container}' is not running. Aborting backup.")
+        return
+    
     try:
         backup_database(args, backup_file)
         upload_to_remote(backup_file, args.remote)
