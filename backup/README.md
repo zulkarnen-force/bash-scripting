@@ -62,3 +62,25 @@ python3 folder.py --folder=/home/zrx/Developments/Bash/bash-scripting  --remote 
   --exclude .git
   --exclude .env >> /home/zrx/backup.log 2>&1
 ```
+
+```bash
+curl -sL https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/main/backup/folder.py | /usr/bin/python3 - --folder /home/zulkarnen/Documents/Obsidian --remote pcloud706:ubuntu-24.04.2-obsidian --retention 3 --exclude=works-obsidian/.git
+```
+
+```bash
+# /etc/anacrontab: configuration file for anacron
+
+# See anacron(8) and anacrontab(5) for details.
+
+SHELL=/bin/sh
+HOME=/root
+LOGNAME=root
+
+# These replace cron's entries
+1	5	cron.daily	run-parts --report /etc/cron.daily
+7	10	cron.weekly	run-parts --report /etc/cron.weekly
+@monthly	15	cron.monthly	run-parts --report /etc/cron.monthly
+
+1       5      zsh-history-backup     curl -sL https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/main/backup/folder.py | /usr/bin/python3 - --folder /home/zulkarnen/ --remote pcloud706:ubuntu-24.04.2 --retention 3 --exclude=Developments --exclude=Videos --exclude=Downloads --exclude=.vscode --exclude=.npm --exclude=.codeium --exclude=snap --exclude=.cache --exclude=.local --exclude=.nvm --exclude=Documents --exclude=.config --exclude=.local --exclude=.cursor --exclude=.docker --exclude=.kube --exclude=.dotnet >> /home/zulkarnen/backup.log 2>&1
+1       5      documents-obsidian-backup     curl -sL https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/main/backup/folder.py | /usr/bin/python3 - --folder /home/zulkarnen/Documents/Obsidian --remote pcloud706:ubuntu-24.04.2-obsidian --retention 3 --exclude=works-obsidian/.git >> /home/zulkarnen/backup.log 2>&1
+```

@@ -53,6 +53,18 @@ def create_backup(folder_path, backup_file, exclude_patterns):
                     print(f"[+] Adding file: {rel_file_path}")
                     tar.add(os.path.join(root, file), arcname=rel_file_path)
     print(f"[+] Created backup archive: {backup_file}")
+    if os.path.exists(backup_file):
+        size = os.path.getsize(backup_file)
+        print(f"[INFO] Final TAR file size: {get_human_readable_size(size)}")
+    else:
+        print(f"[WARN] TAR file not found at {backup_file}")
+
+def get_human_readable_size(size_bytes):
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+        if size_bytes < 1024:
+            return f"{size_bytes:.2f} {unit}"
+        size_bytes /= 1024
+    return f"{size_bytes:.2f} PB"
 
 def upload_to_remote(backup_file, remote_path):
     print(f"[+] Uploading backup file {backup_file} to remote: {remote_path}")
