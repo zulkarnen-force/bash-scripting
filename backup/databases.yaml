@@ -1,0 +1,11 @@
+databases:
+  - type: mongo
+    container: db_authserver_dev
+    username: root
+    password: supersecret
+    database: authserver
+  - type: mysql
+    container: db.sotabar
+    username: root
+    password: password
+    database: db_penduduk_sotabar

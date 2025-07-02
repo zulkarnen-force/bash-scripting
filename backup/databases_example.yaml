@@ -1,0 +1,18 @@
+databases:
+  - type: mongo
+    container: mongo_container
+    username: root
+    password: example
+    database: admin
+
+  - type: postgres
+    container: postgres_container
+    username: postgres
+    password: example
+    database: postgres
+
+  - type: mysql
+    container: mysql_container
+    username: root
+    password: example
+    database: mydb
