@@ -13,7 +13,8 @@ import os
 parser = argparse.ArgumentParser(description="Filesystem Docker DB Backup Script with YAML config")
 parser.add_argument('--config', required=True, help='Path to YAML config file')
 parser.add_argument('--output-dir', required=True, help='Backup output directory in host')
-parser.add_argument('--retention', type=int, default=7, help='Retention in days')
+parser.add_argument('--retention-days', type=int, default=7, help='Retention in days (ignored if --retention-count is set)')
+parser.add_argument('--retention-count', type=int, help='Retention count: keep only the latest N folders')
 parser.add_argument('--log-file', default='/var/log/fs_db_backup.log', help='Log file location')
 args = parser.parse_args()
 
@@ -82,21 +83,32 @@ for db in config.get("databases", []):
 
 if all_success:
     log("✅ All backups completed successfully.")
-    
-    # Retention cleanup only if backups were successful
-    log(f"🧹 Cleaning old backups older than {args.retention} days...")
-    now = time.time()
-    for folder in Path(args.output_dir).iterdir():
-        if not folder.is_dir():
-            continue
-        try:
-            folder_time = time.mktime(datetime.datetime.strptime(folder.name, '%Y-%m-%d_%H-%M-%S').timetuple())
-        except ValueError:
-            continue
-        age_days = (now - folder_time) / 86400
-        if age_days > args.retention:
-            log(f"🗑️ Deleting old backup: {folder} (Age: {int(age_days)} days)")
-            shutil.rmtree(folder)
+
+    # === Retention cleanup ===
+    backup_folders = sorted(
+        [d for d in Path(args.output_dir).iterdir() if d.is_dir()],
+        key=lambda x: x.name  # name is in timestamp format, so sorting works
+    )
+
+    if args.retention_count is not None:
+        log(f"🧹 Retention policy: keep only the latest {args.retention_count} folders")
+        excess = backup_folders[:-args.retention_count]
+    else:
+        log(f"🧹 Retention policy: remove folders older than {args.retention_days} days")
+        now = time.time()
+        excess = []
+        for folder in backup_folders:
+            try:
+                folder_time = time.mktime(datetime.datetime.strptime(folder.name, '%Y-%m-%d_%H-%M-%S').timetuple())
+                age_days = (now - folder_time) / 86400
+                if age_days > args.retention_days:
+                    excess.append(folder)
+            except ValueError:
+                continue  # Skip invalid folder names
+
+    for folder in excess:
+        log(f"🗑️ Deleting old backup: {folder}")
+        shutil.rmtree(folder)
 
     log("✅ Backup and cleanup process finished.")
 else:

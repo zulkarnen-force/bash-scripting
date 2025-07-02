@@ -25,7 +25,6 @@ curl -fsSl https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/main
 0 2 * * * curl -sSL https://raw.githubusercontent.com/zulkarnen-force/backup_database_container/refs/heads/main/backup.bash | bash -s -- -c db.sotabar -u root -p password -t mysql -n sotabar >> ~/docker-backup/logs/backup.log 2>&1
 ```
 
-
 ```bash
 python3 container_backup.py \
   --container db.sotabar \
@@ -36,7 +35,6 @@ python3 container_backup.py \
   --remote pcloud706:my-backups  \
   --retention 3
 ```
-
 
 ```bash
 python3 container_backup.py \
@@ -49,14 +47,13 @@ python3 container_backup.py \
   --retention 3
 ```
 
-
 ```bash
 python3 folder.py --folder=/home/zrx/Developments/Bash/bash-scripting  --remote pcloud706:test-bash --retention  3 --exclude .git
 ```
 
 ```bash
-0 2 * * * curl -sL https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/main/backup/folder.py | /usr/bin/python3 - 
-  --folder /home/zrx/Documents/Secret Directory 
+0 2 * * * curl -sL https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/main/backup/folder.py | /usr/bin/python3 -
+  --folder /home/zrx/Documents/Secret Directory
   --remote pcloud706:test-bash
   --retention 5
   --exclude .git
@@ -65,6 +62,14 @@ python3 folder.py --folder=/home/zrx/Developments/Bash/bash-scripting  --remote 
 
 ```bash
 curl -sL https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/main/backup/folder.py | /usr/bin/python3 - --folder /home/zulkarnen/Documents/Obsidian --remote pcloud706:ubuntu-24.04.2-obsidian --retention 3 --exclude=works-obsidian/.git
+```
+
+## Backup Database Container into File System
+
+```bash
+python3 backup_fs.py --config databases.yaml --output-dir ./example/backups/databases
+python3 backup_fs.py --config databases.yaml --output-dir ./example/backups/databases --retention-days 10
+python3 backup_fs.py --config databases.yaml --output-dir ./example/backups/databases --retention-count 5
 ```
 
 ```bash

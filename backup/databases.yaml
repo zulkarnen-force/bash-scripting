@@ -9,3 +9,8 @@ databases:
     username: root
     password: password
     database: db_penduduk_sotabar
+  - type: mysql
+    container: db.sotabar
+    username: root
+    password: password
+    database: db_penduduk_sotabar
