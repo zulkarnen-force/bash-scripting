@@ -52,6 +52,14 @@ python3 folder.py --folder=/home/zrx/Developments/Bash/bash-scripting  --remote 
 ```
 
 ```bash
+python3 folder.py --folder=/home/zrx --remote pcloud706:test-home --retention 3 --only .ssh/
+python3 folder.py --folder=/home/zrx/Pictures --remote pcloud706:test-pictures --retention 3 --only "*.jpeg"
+python3 folder.py --folder=/home/zrx --remote pcloud706:test-home --retention 3 --only secretfile.txt --exclude .cache
+```
+
+When `--only` is provided, `--exclude` is ignored.
+
+```bash
 0 2 * * * curl -sL https://raw.githubusercontent.com/zulkarnen-force/bash-scripting/main/backup/folder.py | /usr/bin/python3 -
   --folder /home/zrx/Documents/Secret Directory
   --remote pcloud706:test-bash
