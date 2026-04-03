@@ -114,7 +114,7 @@ def is_direct_only_mode(folder_path, only_patterns):
     if not only_patterns:
         return False
 
-    for pattern in only_patterns:00:29:05+00:00 warn agent/embedded {"subsystem":"agent/embedded"} {"event":"embedded_run_agent_end","tags":["error_handling","lifecycle","agent_end","assistant_error"],"runId":"39092e0a-94d3-4a52-9095-a05e27b4cec7","isError":true,"error":"500 {\"error\":\"model requires more system memory (16.8 GiB) than is available (12.6 GiB)\"}","failoverReason":"timeout","model":"qwen3.5:latest","provider":"ollama","rawErrorPreview":"500 {\"error\":\"model requires more system memory (16.8 GiB) than is available (12.6 GiB)\"}","rawErrorHash":"sha256:ffee73728f78"} embedded run agent end
+    for pattern in only_patterns:
         pat = pattern.strip()
         if not pat:
             continue
