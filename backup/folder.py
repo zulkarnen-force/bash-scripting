@@ -104,7 +104,7 @@ def should_descend(rel_dir_path, only_patterns):
 def has_glob_chars(pattern):
     return any(ch in pattern for ch in GLOB_CHARS)
 
-def is_direct_only_mode(only_patterns):
+def is_direct_only_mode(folder_path, only_patterns):
     """True when all --only patterns are explicit relative paths/directories.
 
     Examples:
@@ -114,13 +114,25 @@ def is_direct_only_mode(only_patterns):
     if not only_patterns:
         return False
 
-    for pattern in only_patterns:
+    for pattern in only_patterns:00:29:05+00:00 warn agent/embedded {"subsystem":"agent/embedded"} {"event":"embedded_run_agent_end","tags":["error_handling","lifecycle","agent_end","assistant_error"],"runId":"39092e0a-94d3-4a52-9095-a05e27b4cec7","isError":true,"error":"500 {\"error\":\"model requires more system memory (16.8 GiB) than is available (12.6 GiB)\"}","failoverReason":"timeout","model":"qwen3.5:latest","provider":"ollama","rawErrorPreview":"500 {\"error\":\"model requires more system memory (16.8 GiB) than is available (12.6 GiB)\"}","rawErrorHash":"sha256:ffee73728f78"} embedded run agent end
         pat = pattern.strip()
         if not pat:
             continue
         if has_glob_chars(pat):
             return False
-        if not (pat.endswith("/") or "/" in pat):
+
+        # Path selectors are always direct.
+        if pat.endswith("/") or "/" in pat:
+            continue
+
+        # Bare names are direct only when they resolve under the backup root.
+        abs_target = os.path.abspath(os.path.join(folder_path, pat))
+        try:
+            is_inside = os.path.commonpath([folder_path, abs_target]) == folder_path
+        except ValueError:
+            is_inside = False
+
+        if not (is_inside and os.path.exists(abs_target)):
             return False
     return True
 
@@ -175,7 +187,7 @@ def create_backup(folder_path, backup_file, exclude_patterns, only_patterns):
 
     with tarfile.open(backup_file, "w:gz") as tar:
         # Fast path: explicit path-based --only patterns, avoid full root traversal.
-        if normalized_only_patterns and is_direct_only_mode(normalized_only_patterns):
+        if normalized_only_patterns and is_direct_only_mode(folder_path, normalized_only_patterns):
             print("[+] Using direct --only mode (targeted traversal)")
             added_files = set()
             for pattern in normalized_only_patterns:
